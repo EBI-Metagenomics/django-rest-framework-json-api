@@ -1,7 +1,6 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from example.tests import TestBase
-from example.tests.utils import load_json
 
 
 class GenericValidationTest(TestBase):
@@ -11,7 +10,7 @@ class GenericValidationTest(TestBase):
 
     def setUp(self):
         super(GenericValidationTest, self).setUp()
-        self.url = reverse('user-validation', kwargs={'pk': self.miles.pk})
+        self.url = reverse("user-validation", kwargs={"pk": self.miles.pk})
 
     def test_generic_validation_error(self):
         """
@@ -21,15 +20,14 @@ class GenericValidationTest(TestBase):
         self.assertEqual(response.status_code, 400)
 
         expected = {
-            'errors': [{
-                'status': '400',
-                'source': {
-                    'pointer': '/data'
-                },
-                'detail': 'Oh nohs!'
-            }]
+            "errors": [
+                {
+                    "status": "400",
+                    "source": {"pointer": "/data"},
+                    "detail": "Oh nohs!",
+                    "code": "invalid",
+                }
+            ]
         }
 
-        parsed_content = load_json(response.content)
-
-        assert expected == parsed_content
+        assert expected == response.json()

@@ -32,7 +32,7 @@ like the following:
     },
     "data": [{
         "type": "identities",
-        "id": 3,
+        "id": "3",
         "attributes": {
             "username": "john",
             "full-name": "John Coltrane"
@@ -51,15 +51,23 @@ like the following:
 
 ## Requirements
 
-1. Python (2.7, 3.3, 3.4, 3.5, 3.6)
-2. Django (1.8, 1.9, 1.10, 1.11)
-3. Django REST Framework (3.1, 3.2, 3.3, 3.4, 3.5, 3.6)
+1. Python (3.6, 3.7, 3.8, 3.9)
+2. Django (2.2, 3.0, 3.1)
+3. Django REST Framework (3.12)
+
+We **highly** recommend and only officially support the latest patch release of each Python, Django and REST Framework series.
+
+Generally Python and Django series are supported till the official end of life. For Django REST Framework the last two series are supported.
 
 ## Installation
 
 From PyPI
 
     pip install djangorestframework-jsonapi
+    # for optional package integrations
+    pip install djangorestframework-jsonapi['django-filter']
+    pip install djangorestframework-jsonapi['django-polymorphic']
+    pip install djangorestframework-jsonapi['openapi']
 
 From Source
 
@@ -68,15 +76,23 @@ From Source
 
 ## Running the example app
 
-    git clone https://github.com/django-json-api/django-rest-framework-json-api.git
-    cd django-rest-framework-json-api
-    pip install -e .
-    pip install -r example/requirements.txt
-    django-admin.py runserver
+	git clone https://github.com/django-json-api/django-rest-framework-json-api.git
+	cd django-rest-framework-json-api
+	python3 -m venv env
+	source env/bin/activate
+	pip install -Ur requirements.txt
+	django-admin migrate --settings=example.settings
+	django-admin loaddata drf_example --settings=example.settings
+	django-admin runserver --settings=example.settings
 
-Browse to http://localhost:8000
+
+Browse to
+* [http://localhost:8000](http://localhost:8000) for the list of available collections (in a non-JSONAPI format!),
+* [http://localhost:8000/swagger-ui/](http://localhost:8000/swagger-ui/) for a Swagger user interface to the dynamic schema view, or
+* [http://localhost:8000/openapi](http://localhost:8000/openapi) for the schema view's OpenAPI specification document.
 
 ## Running Tests
 
-    python runtests.py
+    pip install tox
+    tox
 
