@@ -132,8 +132,12 @@ class JSONRenderer(renderers.JSONRenderer):
                         OrderedDict(
                             [
                                 ("type", relation_type),
-                                ("id", encoding.force_str(getattr(
-                                related_object.pk, field.lookup_field))),
+                                (
+                                    "id",
+                                    encoding.force_str(
+                                        getattr(related_object.pk, field.lookup_field)
+                                    ),
+                                ),
                             ]
                         )
                     )
@@ -194,11 +198,11 @@ class JSONRenderer(renderers.JSONRenderer):
                 field,
                 (relations.PrimaryKeyRelatedField, relations.HyperlinkedRelatedField),
             ):
-                lookup_field = getattr(field, 'lookup_field', None)
+                lookup_field = getattr(field, "lookup_field", None)
                 if lookup_field:
                     relation_id = getattr(
-                        getattr(resource_instance, source),
-                        lookup_field, None)
+                        getattr(resource_instance, source), lookup_field, None
+                    )
                 else:
                     resolved, relation = utils.get_relation_instance(
                         resource_instance, "%s_id" % source, field.parent
@@ -266,9 +270,10 @@ class JSONRenderer(renderers.JSONRenderer):
                             nested_resource_instance
                         )
                     )
-                    if hasattr(field.child_relation, 'lookup_field'):
-                        _id = getattr(nested_resource_instance,
-                                      field.child_relation.lookup_field)
+                    if hasattr(field.child_relation, "lookup_field"):
+                        _id = getattr(
+                            nested_resource_instance, field.child_relation.lookup_field
+                        )
                     else:
                         _id = nested_resource_instance.pk
 
@@ -499,11 +504,11 @@ class JSONRenderer(renderers.JSONRenderer):
             resource_name = utils.get_resource_type_from_instance(resource_instance)
         if resource_instance is None:
             pk = None
-        elif 'id' in fields:
-            pk = fields['id'].get_attribute(resource_instance)
+        elif "id" in fields:
+            pk = fields["id"].get_attribute(resource_instance)
             pk = encoding.force_str(pk)
-        elif 'url' in fields:
-            pk = getattr(resource_instance, fields['url'].lookup_field)
+        elif "url" in fields:
+            pk = getattr(resource_instance, fields["url"].lookup_field)
             pk = encoding.force_str(pk)
         else:
             # Check if the primary key exists in the resource by getting the primary keys attribute name.
