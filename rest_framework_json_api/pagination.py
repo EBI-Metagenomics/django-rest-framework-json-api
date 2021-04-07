@@ -13,8 +13,8 @@ class JsonApiPageNumberPagination(PageNumberPagination):
     A json-api compatible pagination format.
     """
 
-    page_query_param = "page"
-    page_size_query_param = "page_size"
+    page_query_param = "page[number]"
+    page_size_query_param = "page[size]"
     max_page_size = 100
 
     def build_link(self, index):
