@@ -7,13 +7,15 @@ from example.models import (
     ArtProject,
     Author,
     AuthorBio,
+    AuthorBioMetadata,
     AuthorType,
     Blog,
     Comment,
     Company,
     Entry,
+    ProjectType,
     ResearchProject,
-    TaggedItem
+    TaggedItem,
 )
 
 faker = FakerFactory.create()
@@ -41,7 +43,7 @@ class AuthorFactory(factory.django.DjangoModelFactory):
     name = factory.LazyAttribute(lambda x: faker.name())
     email = factory.LazyAttribute(lambda x: faker.email())
 
-    bio = factory.RelatedFactory('example.factories.AuthorBioFactory', 'author')
+    bio = factory.RelatedFactory("example.factories.AuthorBioFactory", "author")
     type = factory.SubFactory(AuthorTypeFactory)
 
 
@@ -50,6 +52,18 @@ class AuthorBioFactory(factory.django.DjangoModelFactory):
         model = AuthorBio
 
     author = factory.SubFactory(AuthorFactory)
+    body = factory.LazyAttribute(lambda x: faker.text())
+
+    metadata = factory.RelatedFactory(
+        "example.factories.AuthorBioMetadataFactory", "bio"
+    )
+
+
+class AuthorBioMetadataFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AuthorBioMetadata
+
+    bio = factory.SubFactory(AuthorBioFactory)
     body = factory.LazyAttribute(lambda x: faker.text())
 
 
@@ -89,12 +103,20 @@ class TaggedItemFactory(factory.django.DjangoModelFactory):
     tag = factory.LazyAttribute(lambda x: faker.word())
 
 
+class ProjectTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProjectType
+
+    name = factory.LazyAttribute(lambda x: faker.name())
+
+
 class ArtProjectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ArtProject
 
     topic = factory.LazyAttribute(lambda x: faker.catch_phrase())
     artist = factory.LazyAttribute(lambda x: faker.name())
+    project_type = factory.SubFactory(ProjectTypeFactory)
 
 
 class ResearchProjectFactory(factory.django.DjangoModelFactory):
@@ -103,6 +125,7 @@ class ResearchProjectFactory(factory.django.DjangoModelFactory):
 
     topic = factory.LazyAttribute(lambda x: faker.catch_phrase())
     supervisor = factory.LazyAttribute(lambda x: faker.name())
+    project_type = factory.SubFactory(ProjectTypeFactory)
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -114,7 +137,7 @@ class CompanyFactory(factory.django.DjangoModelFactory):
 
     @factory.post_generation
     def future_projects(self, create, extracted, **kwargs):
-        if not create:
+        if not create:  # pragma: no cover
             return
         if extracted:
             for project in extracted:
